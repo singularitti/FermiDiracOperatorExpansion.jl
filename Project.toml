@@ -3,6 +3,8 @@ uuid = "33afacd8-8107-4a45-99dc-008ba02c4a67"
 authors = ["singularitti <singularitti@outlook.com> and contributors"]
 version = "1.0.0-DEV"
 
+[deps]
+ConjugateGradient = "f400940f-8640-4bea-acd3-3d881d7c7dbd"
 [compat]
 julia = "1"
 
