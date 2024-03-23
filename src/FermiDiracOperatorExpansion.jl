@@ -1,5 +1,7 @@
 module FermiDiracOperatorExpansion
 
-# Write your package code here.
+abstract type Solver end
+struct CG <: Solver end
+struct NewtonSchulz <: Solver end
 
 end
