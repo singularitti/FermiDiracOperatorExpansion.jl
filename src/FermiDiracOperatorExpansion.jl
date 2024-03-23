@@ -5,18 +5,20 @@ export expand
 
 using ConjugateGradient: cg
 using LinearAlgebra: I
+using OffsetArrays: OffsetVector, Origin
 
 abstract type Solver end
 struct CG <: Solver end
 struct NewtonSchulz <: Solver end
 
-function expand(𝐗₀, ::CG; order=2048, cgiter=2000)
+function expand(𝐗₀::AbstractMatrix, ::CG; order=2048, cgiter=2000)
     M, N = size(𝐗₀)
     if M != N
         throw(DimensionMismatch("𝐗₀ must be a square matrix!"))
     end
     𝐗ᵢ = 𝐗₀  # i=0
-    map(1:ceil(log2(order))) do _  # Start from i+1
+    iterations = OffsetVector([𝐗ᵢ], Origin(0))
+    foreach(1:ceil(log2(order))) do _  # Start from i+1
         𝐗ᵢ² = 𝐗ᵢ^2
         𝐀 = 2𝐗ᵢ² - 2𝐗ᵢ + I
         𝐗ᵢ = splat(hcat)(
@@ -30,9 +32,9 @@ function expand(𝐗₀, ::CG; order=2048, cgiter=2000)
                 𝐱  # The jth column of 𝐗ᵢ₊₁
             end,
         )
-        𝐗ᵢ
+        push!(iterations, 𝐗ᵢ)
     end
-    return nothing
+    return iterations
 end
 
 end
