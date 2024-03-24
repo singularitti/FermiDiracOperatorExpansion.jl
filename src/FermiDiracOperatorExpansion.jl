@@ -7,6 +7,11 @@ using ConjugateGradient: cg
 using LinearAlgebra: I
 using OffsetArrays: OffsetVector, Origin
 
+# See https://github.com/JuliaMath/Roots.jl/blob/bf0da62/src/utils.jl#L9-L11
+struct ConvergenceFailed
+    msg::String
+end
+
 abstract type Solver end
 Base.@kwdef struct CG <: Solver
     atol::Float64 = eps()
