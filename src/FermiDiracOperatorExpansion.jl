@@ -19,7 +19,7 @@ Base.@kwdef struct CG <: Solver
 end
 struct NewtonSchulz <: Solver end
 
-function expand(𝐗₀::AbstractMatrix, ::CG; order=2048, cgiter=2000)
+function expand(𝐗₀::AbstractMatrix, solver::CG; order=2048)
     M, N = size(𝐗₀)
     if M != N
         throw(DimensionMismatch("𝐗₀ must be a square matrix!"))
@@ -33,9 +33,9 @@ function expand(𝐗₀::AbstractMatrix, ::CG; order=2048, cgiter=2000)
             map(1:N) do j
                 𝐱 = 𝐗ᵢ[:, j]
                 𝐛 = 𝐗ᵢ²[:, j]
-                isconverged = false
-                while isconverged
-                    𝐱, _, isconverged = cg(𝐀, 𝐛, 𝐱; atol=eps(), maxiter=cgiter)
+                𝐱, _, isconverged = cg(𝐀, 𝐛, 𝐱; atol=solver.atol, maxiter=solver.maxiter)
+                if !isconverged
+                    throw(ConvergenceFailed("CG did not converge! Increase `maxiter`!"))
                 end
                 𝐱  # The jth column of 𝐗ᵢ₊₁
             end,
