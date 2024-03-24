@@ -45,4 +45,6 @@ function expand(𝐗₀::AbstractMatrix, solver::CG; order=2048)
     return iterations
 end
 
+normalize(𝐇::AbstractMatrix, α, μ) = α * (𝐇 - μ * I) + I / 2
+
 end
