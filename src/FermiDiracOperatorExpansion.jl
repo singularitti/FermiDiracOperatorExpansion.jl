@@ -8,7 +8,10 @@ using LinearAlgebra: I
 using OffsetArrays: OffsetVector, Origin
 
 abstract type Solver end
-struct CG <: Solver end
+Base.@kwdef struct CG <: Solver
+    atol::Float64 = eps()
+    maxiter::UInt64 = 2000
+end
 struct NewtonSchulz <: Solver end
 
 function expand(𝐗₀::AbstractMatrix, ::CG; order=2048, cgiter=2000)
