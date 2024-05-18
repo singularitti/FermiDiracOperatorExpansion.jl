@@ -20,6 +20,7 @@ end
 struct NewtonSchulz <: Solver end
 
 function expand(𝐗₀::AbstractMatrix, solver::CG; order=2048)
+    𝐗₀ = collect(𝐗₀)
     M, N = size(𝐗₀)
     if M != N
         throw(DimensionMismatch("𝐗₀ must be a square matrix!"))
