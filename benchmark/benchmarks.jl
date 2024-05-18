@@ -19,3 +19,10 @@ function setup_hamiltonian(N, a=0.01)
     end
     return Symmetric(𝐇)
 end
+
+function main()
+    𝐇 = setup_hamiltonian(100)
+    return densitymatrix(𝐇, CG())
+end
+
+main()
