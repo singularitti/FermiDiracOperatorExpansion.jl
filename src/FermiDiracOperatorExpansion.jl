@@ -47,7 +47,11 @@ function expand(𝐗₀::AbstractMatrix, solver::CG; order=2048)
 end
 
 function estimate_alpha(𝐇::AbstractMatrix, mu=1 / 2)
-    λₘᵢₙ, λₘₐₓ = extrema(eigvals(𝐇))
+    𝛌 = eigvals(𝐇)
+    if isempty(𝛌)
+        return zero(eltype(𝐇))
+    end
+    λₘᵢₙ, λₘₐₓ = extrema(𝛌)
     return minimum((inv(mu - λₘᵢₙ), inv(λₘₐₓ - mu))) / 2
 end
 
