@@ -1,10 +1,10 @@
 module FermiDiracOperatorExpansion
 
 export CG, NewtonSchulz
-export expand
+export densitymatrix, estimate_alpha, expand
 
 using ConjugateGradient: cg
-using LinearAlgebra: I
+using LinearAlgebra: I, eigvals
 using OffsetArrays: OffsetVector, Origin
 
 # See https://github.com/JuliaMath/Roots.jl/blob/bf0da62/src/utils.jl#L9-L11
@@ -46,6 +46,20 @@ function expand(𝐗₀::AbstractMatrix, solver::CG; order=2048)
     return iterations
 end
 
-normalize(𝐇::AbstractMatrix, α, μ) = α * (𝐇 - μ * I) + I / 2
+function estimate_alpha(𝐇::AbstractMatrix, mu=1 / 2)
+    λₘᵢₙ, λₘₐₓ = extrema(eigvals(𝐇))
+    return minimum((inv(mu - λₘᵢₙ), inv(λₘₐₓ - mu))) / 2
+end
+
+normalize(𝐇::AbstractMatrix; mu=1 / 2, alpha=estimate_alpha(𝐇, mu)) =
+    alpha * (𝐇 - mu * I) + I / 2
+
+function densitymatrix(
+    𝐇::AbstractMatrix, solver::Solver; mu=1 / 2, alpha=estimate_alpha(𝐇, mu), order=2048
+)
+    iterations = expand(normalize(𝐇; mu, alpha), solver; order)
+    𝐗ₙ = last(iterations)
+    return I - 𝐗ₙ
+end
 
 end
