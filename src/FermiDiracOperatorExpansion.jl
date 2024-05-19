@@ -49,7 +49,7 @@ end
 function estimate_alpha(𝐇::AbstractMatrix, mu=1 / 2)
     𝛌 = eigvals(𝐇)
     if isempty(𝛌)
-        return zero(eltype(𝐇))
+        throw("no eigenvalues found!")
     end
     λₘᵢₙ, λₘₐₓ = extrema(𝛌)
     return minimum((inv(mu - λₘᵢₙ), inv(λₘₐₓ - mu))) / 2
