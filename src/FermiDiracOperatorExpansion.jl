@@ -4,7 +4,8 @@ export CG, NewtonSchulz
 export densitymatrix, estimate_alpha, expand
 
 using ConjugateGradient: cg
-using LinearAlgebra: I, eigvals
+using GershgorinDiscs: eigvals_extrema
+using LinearAlgebra: I
 using OffsetArrays: OffsetVector, Origin
 
 # See https://github.com/JuliaMath/Roots.jl/blob/bf0da62/src/utils.jl#L9-L11
@@ -47,11 +48,7 @@ function expand(𝐗₀::AbstractMatrix, solver::CG; order=2048)
 end
 
 function estimate_alpha(𝐇::AbstractMatrix, mu=1 / 2)
-    𝛌 = eigvals(𝐇)
-    if isempty(𝛌)
-        throw("no eigenvalues found!")
-    end
-    λₘᵢₙ, λₘₐₓ = extrema(𝛌)
+    λₘᵢₙ, λₘₐₓ = eigvals_extrema(𝐇)
     return minimum((inv(mu - λₘᵢₙ), inv(λₘₐₓ - mu))) / 2
 end
 
