@@ -5,7 +5,7 @@ export densitymatrix, estimate_alpha, expand
 
 using ConjugateGradient: cg
 using GershgorinDiscs: eigvals_extrema
-using LinearAlgebra: I
+using LinearAlgebra: I, checksquare
 using OffsetArrays: OffsetVector, Origin
 
 # See https://github.com/JuliaMath/Roots.jl/blob/bf0da62/src/utils.jl#L9-L11
@@ -22,10 +22,8 @@ struct NewtonSchulz <: Solver end
 
 function expand(𝐗₀::AbstractMatrix, solver::CG; order=2048)
     𝐗₀ = collect(𝐗₀)
+    checksquare(𝐗₀)  # See https://discourse.julialang.org/t/120556/2
     M, N = size(𝐗₀)
-    if M != N
-        throw(DimensionMismatch("𝐗₀ must be a square matrix!"))
-    end
     𝐗ᵢ = 𝐗₀  # i=0
     iterations = OffsetVector([𝐗ᵢ], Origin(0))
     foreach(1:ceil(log2(order))) do _  # Start from i+1
