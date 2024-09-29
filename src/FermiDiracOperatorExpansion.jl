@@ -42,18 +42,18 @@ function expand(𝐗₀::AbstractMatrix, solver::CG; order=2048)
     return iterations
 end
 
-function estimate_alpha(𝐇::AbstractMatrix, mu=1 / 2)
+function estimate_alpha(𝐇::AbstractMatrix, μ)
     λₘᵢₙ, λₘₐₓ = eigvals_extrema(𝐇)
-    return minimum((inv(mu - λₘᵢₙ), inv(λₘₐₓ - mu))) / 2
+    return minimum((inv(μ - λₘᵢₙ), inv(λₘₐₓ - μ))) / 2
 end
 
-normalize(𝐇::AbstractMatrix; mu=1 / 2, alpha=estimate_alpha(𝐇, mu)) =
-    alpha * (𝐇 - mu * I) + I / 2
+normalize(𝐇::AbstractMatrix, μ, α=estimate_alpha(𝐇, μ)) = α * (𝐇 - μ * I) + I / 2
 
 function densitymatrix(
-    𝐇::AbstractMatrix, solver::Solver; mu=1 / 2, alpha=estimate_alpha(𝐇, mu), order=2048
+    𝐇::AbstractMatrix, μ, α=estimate_alpha(𝐇, μ), solver::Solver; order=2048
 )
-    iterations = expand(normalize(𝐇; mu, alpha), solver; order)
+    𝐗₀ = normalize(𝐇, μ, α)
+    iterations = expand(𝐗₀, solver; order)
     𝐗ₙ = last(iterations)
     return I - 𝐗ₙ
 end
