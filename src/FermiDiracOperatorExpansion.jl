@@ -1,7 +1,7 @@
 module FermiDiracOperatorExpansion
 
 export CG, NewtonSchulz
-export densitymatrix, estimate_alpha, expand
+export densitymatrix, estimate_alpha, expand, get_temperature, get_order
 
 using ConjugateGradient: cg
 using GershgorinDiscs: eigvals_extrema
@@ -57,5 +57,10 @@ function densitymatrix(
     𝐗ₙ = last(iterations)
     return I - 𝐗ₙ
 end
+
+get_order(α, β) = β / 4α
+
+get_temperature(order, α, kB) = 1 / 4order / α / kB
+get_temperature(β, kB) = 1 / beta / kB
 
 end
