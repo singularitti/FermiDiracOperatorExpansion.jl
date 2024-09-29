@@ -1,7 +1,7 @@
 module FermiDiracOperatorExpansion
 
 export CG, NewtonSchulz
-export densitymatrix, estimate_alpha, expand, get_temperature, get_order
+export density_matrix, estimate_alpha, expand, get_temperature, get_order
 
 using ConjugateGradient: cg
 using GershgorinDiscs: eigvals_extrema
@@ -49,7 +49,7 @@ end
 
 normalize(𝐇::AbstractMatrix, μ, α=estimate_alpha(𝐇, μ)) = α * (𝐇 - μ * I) + I / 2
 
-function densitymatrix(
+function density_matrix(
     𝐇::AbstractMatrix, μ, α=estimate_alpha(𝐇, μ); solver::Solver=CG(), order=2048
 )
     𝐗₀ = normalize(𝐇, μ, α)
