@@ -23,23 +23,20 @@ struct NewtonSchulz <: Solver end
 function expand(𝐗₀::AbstractMatrix, solver::CG; order=2048)
     𝐗₀ = collect(𝐗₀)
     checksquare(𝐗₀)  # See https://discourse.julialang.org/t/120556/2
-    M, N = size(𝐗₀)
     𝐗ᵢ = 𝐗₀  # i=0
     iterations = OffsetVector([𝐗ᵢ], Origin(0))
     foreach(1:ceil(log2(order))) do _  # Start from i+1
         𝐗ᵢ² = 𝐗ᵢ^2
         𝐀 = 2𝐗ᵢ² - 2𝐗ᵢ + I
         𝐗ᵢ = splat(hcat)(
-            map(1:N) do j
-                𝐱 = 𝐗ᵢ[:, j]
-                𝐛 = 𝐗ᵢ²[:, j]
+            map(zip(eachcol(𝐗ᵢ), eachcol(𝐗ᵢ²))) do (𝐱, 𝐛)
                 𝐱, _, isconverged = cg(𝐀, 𝐛, 𝐱; atol=solver.atol, maxiter=solver.maxiter)
                 if !isconverged
                     throw(ConvergenceFailed("CG did not converge! Increase `maxiter`!"))
                 end
-                𝐱  # The jth column of 𝐗ᵢ₊₁
+                𝐱  # Each column of 𝐗ᵢ₊₁
             end,
-        )
+        )  # It is actually 𝐗ᵢ₊₁
         push!(iterations, 𝐗ᵢ)
     end
     return iterations
