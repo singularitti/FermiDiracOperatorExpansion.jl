@@ -4,7 +4,6 @@ authors = ["singularitti <singularitti@outlook.com> and contributors"]
 version = "1.0.0-DEV"
 
 [deps]
-ConjugateGradient = "f400940f-8640-4bea-acd3-3d881d7c7dbd"
 GershgorinDiscs = "1acd937f-ba38-4cfb-ac8e-9b470edff748"
 IterativeSolvers = "42fd0dbc-a981-5370-80f2-aaf504508153"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
