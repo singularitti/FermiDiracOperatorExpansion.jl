@@ -16,12 +16,21 @@ function setup_hamiltonian(N, a=0.01)
     return Symmetric(𝐇)
 end
 
-β = 4
+β = 40
 μ = 0.1
 𝐇 = setup_hamiltonian(100)
+
 α = estimate_alpha(𝐇, μ)
+α_exact = compute_alpha(𝐇, μ)
+
 order = get_order(α, β)
+order_exact = get_order(α_exact, β)
+
 dm = density_matrix(𝐇, μ, α; order)
 N = tr(dm)
+
+dm_alpha = density_matrix(𝐇, μ, α_exact; order=order_exact)
+N_alpha = tr(dm_alpha)
+
 dm_exact = fermi_dirac(𝐇, μ, β)
 N_exact = tr(dm_exact)
