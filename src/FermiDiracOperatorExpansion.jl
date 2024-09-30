@@ -3,7 +3,7 @@ module FermiDiracOperatorExpansion
 export CG, NewtonSchulz
 export density_matrix, estimate_alpha, expand, fermi_dirac, get_order
 
-using ConjugateGradient: cg
+using IterativeSolvers: cg!
 using GershgorinDiscs: eigvals_extrema
 using LinearAlgebra: I, Diagonal, checksquare, eigen
 using OffsetArrays: OffsetVector, Origin
@@ -30,11 +30,16 @@ function expand(𝐗₀::AbstractMatrix, solver::CG=CG(); order=2048)
         𝐀 = 2𝐗ᵢ² - 2𝐗ᵢ + I
         𝐗ᵢ = splat(hcat)(
             map(zip(eachcol(𝐗ᵢ), eachcol(𝐗ᵢ²))) do (𝐱, 𝐛)
-                𝐱, _, isconverged = cg(𝐀, 𝐛, 𝐱; atol=solver.atol, maxiter=solver.maxiter)
-                if !isconverged
-                    throw(ConvergenceFailed("CG did not converge! Increase `maxiter`!"))
-                end
-                𝐱  # Each column of 𝐗ᵢ₊₁
+                𝐱′ = copy(𝐱)
+                cg!(
+                    𝐱′,
+                    𝐀,
+                    𝐛;
+                    abstol=solver.abstol,
+                    maxiter=Int(solver.maxiter),
+                    verbose=true,
+                )
+                𝐱′  # Each column of 𝐗ᵢ₊₁
             end,
         )  # It is actually 𝐗ᵢ₊₁
         push!(iterations, 𝐗ᵢ)
