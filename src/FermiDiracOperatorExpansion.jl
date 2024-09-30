@@ -17,6 +17,7 @@ abstract type Solver end
 Base.@kwdef struct CG <: Solver
     abstol::Float64 = 0
     maxiter::UInt64 = 2000
+    verbose::Bool = false
 end
 struct NewtonSchulz <: Solver end
 
@@ -37,7 +38,7 @@ function expand(𝐗₀::AbstractMatrix, solver::CG=CG(); order=2048)
                     𝐛;
                     abstol=solver.abstol,
                     maxiter=Int(solver.maxiter),
-                    verbose=true,
+                    verbose=solver.verbose,
                 )
                 𝐱′  # Each column of 𝐗ᵢ₊₁
             end,
