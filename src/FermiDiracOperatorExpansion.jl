@@ -5,7 +5,7 @@ export density_matrix, estimate_alpha, expand, get_temperature, get_order, fermi
 
 using ConjugateGradient: cg
 using GershgorinDiscs: eigvals_extrema
-using LinearAlgebra: I, checksquare
+using LinearAlgebra: I, Diagonal, checksquare, eigen
 using OffsetArrays: OffsetVector, Origin
 
 # See https://github.com/JuliaMath/Roots.jl/blob/bf0da62/src/utils.jl#L9-L11
@@ -63,6 +63,15 @@ get_order(α, β) = β / 4α
 get_temperature(order, α, kB) = 1 / 4order / α / kB
 get_temperature(β, kB) = 1 / beta / kB
 
-fermi_dirac(𝐇::AbstractMatrix, μ, β) = inv(exp(β * (𝐇 - μ * I)) + I)
+function fermi_dirac(ε, μ, β)
+    η = exp((ε - μ) * β)
+    return inv(oneunit(η) + η)
+end
+function fermi_dirac(𝐇::AbstractMatrix, μ, β)
+    E = eigen(𝐇)
+    Λ, V = E.values, E.vectors
+    FD = fermi_dirac.(Λ, μ, β)
+    return V * Diagonal(FD) * V'
+end
 
 end
