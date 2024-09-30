@@ -1,11 +1,11 @@
 module FermiDiracOperatorExpansion
 
 export CG, NewtonSchulz
-export density_matrix, estimate_alpha, expand, fermi_dirac, get_order
+export density_matrix, estimate_alpha, compute_alpha, expand, fermi_dirac, get_order
 
 using IterativeSolvers: cg!
 using GershgorinDiscs: eigvals_extrema
-using LinearAlgebra: I, Diagonal, checksquare, eigen
+using LinearAlgebra: I, Diagonal, checksquare, eigen, eigvals
 using OffsetArrays: OffsetVector, Origin
 
 # See https://github.com/JuliaMath/Roots.jl/blob/bf0da62/src/utils.jl#L9-L11
@@ -49,6 +49,11 @@ end
 
 function estimate_alpha(𝐇::AbstractMatrix, μ)
     λₘᵢₙ, λₘₐₓ = eigvals_extrema(𝐇)
+    return minimum((inv(μ - λₘᵢₙ), inv(λₘₐₓ - μ))) / 2
+end
+
+function compute_alpha(𝐇::AbstractMatrix, μ)
+    λₘᵢₙ, λₘₐₓ = extrema(eigvals(𝐇))
     return minimum((inv(μ - λₘᵢₙ), inv(λₘₐₓ - μ))) / 2
 end
 
