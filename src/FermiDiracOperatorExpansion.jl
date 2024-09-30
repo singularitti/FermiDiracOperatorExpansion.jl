@@ -1,7 +1,7 @@
 module FermiDiracOperatorExpansion
 
 export CG, NewtonSchulz
-export density_matrix, estimate_alpha, expand, get_temperature, get_order
+export density_matrix, estimate_alpha, expand, get_temperature, get_order, fermi_dirac
 
 using ConjugateGradient: cg
 using GershgorinDiscs: eigvals_extrema
@@ -62,5 +62,7 @@ get_order(α, β) = β / 4α
 
 get_temperature(order, α, kB) = 1 / 4order / α / kB
 get_temperature(β, kB) = 1 / beta / kB
+
+fermi_dirac(𝐇::AbstractMatrix, μ, β) = inv(exp(β * (𝐇 - μ * I)) + I)
 
 end
