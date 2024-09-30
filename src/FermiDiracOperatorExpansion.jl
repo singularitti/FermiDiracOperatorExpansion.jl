@@ -15,7 +15,7 @@ end
 
 abstract type Solver end
 Base.@kwdef struct CG <: Solver
-    atol::Float64 = eps()
+    abstol::Float64 = 0
     maxiter::UInt64 = 2000
 end
 struct NewtonSchulz <: Solver end
