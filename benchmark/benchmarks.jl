@@ -1,15 +1,11 @@
 using FermiDiracOperatorExpansion
 using BenchmarkTools
-using LinearAlgebra: Symmetric, diagm
+using LinearAlgebra: Symmetric, diagm, tr
 
 SUITE = BenchmarkGroup()
 SUITE["rand"] = @benchmarkable rand(10)
 
 # Write your benchmarks here.
-
-const kBT = 0.25
-const μ = 0.1
-
 function setup_hamiltonian(N, a=0.01)
     𝐇 = diagm(10 * rand(N))
     foreach(1:size(𝐇, 1)) do i
@@ -20,9 +16,12 @@ function setup_hamiltonian(N, a=0.01)
     return Symmetric(𝐇)
 end
 
-function main()
-    𝐇 = setup_hamiltonian(100)
-    return densitymatrix(𝐇, CG())
-end
-
-main()
+β = 4
+μ = 0.1
+𝐇 = setup_hamiltonian(100)
+α = estimate_alpha(𝐇, μ)
+order = get_order(α, β)
+dm = density_matrix(𝐇, μ, α; order)
+N = tr(dm)
+dm_exact = fermi_dirac(𝐇, μ, β)
+N_exact = tr(dm_exact)
