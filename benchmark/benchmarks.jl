@@ -9,7 +9,7 @@ SUITE["rand"] = @benchmarkable rand(10)
 
 # Write your benchmarks here.
 function setup_hamiltonian(N, a=0.01)
-    𝐇 = diagm(10.0 * (1:N))
+    𝐇 = diagm(10.0 * rand(N))
     foreach(1:size(𝐇, 1)) do i
         foreach((i + 1):size(𝐇, 2)) do j
             𝐇[i, j] = exp(-a * (i - j)^2)  # Mimic a non-metallic system or a metallic system at ﬁnite temperature
