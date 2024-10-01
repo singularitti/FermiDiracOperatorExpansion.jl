@@ -17,6 +17,15 @@ function setup_hamiltonian(N, a=0.01)
     end
     return Symmetric(𝐇)
 end
+function setup_hamiltonian2(N)
+    𝐇 = zeros(N, N)
+    foreach(1:size(𝐇, 1)) do i
+        foreach((i + 1):size(𝐇, 2)) do j
+            𝐇[i, j] = exp(-abs(i - j) / 2) * sin(i + j)
+        end
+    end
+    return Symmetric(𝐇)
+end
 
 function fermi_dirac_derivative(ε, μ, β)
     fd = fermi_dirac(ε, μ, β)
