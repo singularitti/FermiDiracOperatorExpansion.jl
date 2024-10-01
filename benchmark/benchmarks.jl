@@ -57,17 +57,17 @@ end
 μ = 0.1
 𝐇 = setup_hamiltonian(1000)
 
-# α = estimate_alpha(𝐇, μ)
-# α_exact = compute_alpha(𝐇, μ)
+α = estimate_alpha(𝐇, μ)
+α_exact = compute_alpha(𝐇, μ)
 
-# order = get_order(α, β)
-# order_α_exact = get_order(α_exact, β)
+order = get_order(α, β)
+order_α_exact = get_order(α_exact, β)
 
-# dm = density_matrix(𝐇, μ, α; order)
-# N = tr(dm) / size(dm, 1)
+dm = density_matrix(𝐇, μ, α; order)
+N = tr(dm)
 
 # dm_α_exact = density_matrix(𝐇, μ, α_exact; order=order_α_exact)
-# N_α_exact = tr(dm_α_exact) / size(dm, 1)
+# N_α_exact = tr(dm_α_exact)
 
-# dm_exact = fermi_dirac(𝐇, μ, β)
-# N_exact = tr(dm_exact) / size(dm, 1)
+dm_exact = fermi_dirac(𝐇, μ, β)
+N_exact = tr(dm_exact)
