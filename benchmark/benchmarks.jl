@@ -31,8 +31,7 @@ function estimate_mu(𝐇, nocc)
     @show μ₀
     g(μ) = nocc - sum(fermi_dirac.(diagonal, μ, β))
     g′(μ) = sum(fermi_dirac_derivative.(diagonal, μ, β))
-    # return find_zero((g, g′), μ₀, Newton(); atol=1e-8, maxiters=50, verbose=true)
-    return newton_raphson(g, g′, μ₀; tol=1e-10, maxiter=1000)
+    return find_zero((g, g′), μ₀, Newton(); atol=1e-8, maxiters=50, verbose=true)
 end
 function compute_mu(𝐇, nocc)
     nocc = floor(Int, nocc)
@@ -42,38 +41,12 @@ function compute_mu(𝐇, nocc)
     @show μ₀
     g(μ) = nocc - sum(fermi_dirac.(evals, μ, β))
     g′(μ) = sum(fermi_dirac_derivative.(evals, μ, β))
-    # return find_zero((g, g′), μ₀, Newton(); atol=1e-8, maxiters=50, verbose=true)
-    return newton_raphson(g, g′, μ₀; tol=1e-10, maxiter=1000)
-end
-
-function newton_raphson(
-    f::Function,
-    fprime::Function,
-    x0::Number,
-    args::Tuple=();
-    tol::AbstractFloat=1e-8,
-    maxiter::Integer=50,
-    eps::AbstractFloat=1e-10,
-)
-    for _ in 1:maxiter
-        yprime = fprime(x0, args...)
-        if abs(yprime) < eps
-            return x0
-        end
-        y = f(x0, args...)
-        x1 = x0 - y / yprime
-        if abs(x1 - x0) < tol
-            @show x1 - x0
-            return x1
-        end
-        x0 = x1
-    end
-    return error("Max iteration exceeded")
+    return find_zero((g, g′), μ₀, Newton(); atol=1e-8, maxiters=50, verbose=true)
 end
 
 β = 1.1604441716111258
 μ = 0.1
-𝐇 = setup_hamiltonian(100)
+𝐇 = setup_hamiltonian(1000)
 
 # α = estimate_alpha(𝐇, μ)
 # α_exact = compute_alpha(𝐇, μ)
