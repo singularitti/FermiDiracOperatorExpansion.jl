@@ -1,7 +1,7 @@
 module FermiDiracOperatorExpansion
 
 export CG, NewtonSchulz
-export density_matrix, estimate_alpha, compute_alpha, expand, fermi_dirac
+export density_matrix, estimate_alpha, compute_alpha, normalize, expand, fermi_dirac
 
 using IterativeSolvers: cg!
 using GershgorinDiscs: eigvals_extrema
