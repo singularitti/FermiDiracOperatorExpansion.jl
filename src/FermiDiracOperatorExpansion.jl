@@ -1,7 +1,7 @@
 module FermiDiracOperatorExpansion
 
 export CG, NewtonSchulz
-export density_matrix, estimate_alpha, compute_alpha, expand, fermi_dirac, get_order
+export density_matrix, estimate_alpha, compute_alpha, expand, fermi_dirac
 
 using IterativeSolvers: cg!
 using GershgorinDiscs: eigvals_extrema
@@ -68,8 +68,6 @@ function density_matrix(
     𝐗ₙ = last(iterations)
     return I - 𝐗ₙ
 end
-
-get_order(α, β) = β / 4α
 
 function fermi_dirac(ε, μ, β)
     η = exp((ε - μ) * β)
