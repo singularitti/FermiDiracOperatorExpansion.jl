@@ -60,9 +60,6 @@ end
 α = estimate_alpha(𝐇, μ)
 α_exact = compute_alpha(𝐇, μ)
 
-order = get_order(α, β)
-order_α_exact = get_order(α_exact, β)
-
 dm = density_matrix(𝐇, μ, α; order)
 N = tr(dm)
 
