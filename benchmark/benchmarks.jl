@@ -21,10 +21,13 @@ function setup_hamiltonian2(N)
     𝐇 = zeros(N, N)
     foreach(1:size(𝐇, 1)) do i
         foreach((i + 1):size(𝐇, 2)) do j
-            𝐇[i, j] = exp(-abs(i - j) / 2) * sin(i + j)
+            𝐇[i, j] = exp(-0.0005abs(i - j) / 2) * sin(i + j)
         end
     end
     return Symmetric(𝐇)
+end
+function setup_hamiltonian3(N)
+    return 100 * diagm(sort(rand(N)))
 end
 
 function fermi_dirac_derivative(ε, μ, β)
