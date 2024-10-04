@@ -1,15 +1,15 @@
-export density_matrix, estimate_alpha, compute_alpha, normalize, expand
+export density_matrix, estimate_alpha, compute_alpha, normalize, expand, expansion_order
 
 using GershgorinDiscs: eigvals_extrema
 using LinearAlgebra: I, Diagonal, checksquare, eigen, eigvals
 using OffsetArrays: OffsetVector, Origin
 
-function expand(𝐗₀::AbstractMatrix, order=2048)
+function expand(𝐗₀::AbstractMatrix, niterations=20)
     𝐗₀ = collect(𝐗₀)
     checksquare(𝐗₀)  # See https://discourse.julialang.org/t/120556/2
     𝐗ᵢ = 𝐗₀  # i=0
     iterations = OffsetVector([𝐗ᵢ], Origin(0))
-    foreach(1:ceil(log2(order))) do _  # Start from i+1
+    foreach(1:niterations) do _  # Start from i+1
         𝐗ᵢ² = 𝐗ᵢ^2
         𝐀 = 2𝐗ᵢ² - 2𝐗ᵢ + I
         𝐗ᵢ = 𝐀 \ 𝐗ᵢ² # It is actually 𝐗ᵢ₊₁ = (𝐗ᵢ² + (I - 𝐗ᵢ)²)⁻¹ 𝐗ᵢ²
@@ -30,9 +30,11 @@ end
 
 normalize(𝐇::AbstractMatrix, μ, α=estimate_alpha(𝐇, μ)) = α * (𝐇 - μ * I) + I / 2
 
-function density_matrix(𝐇::AbstractMatrix, μ, α=estimate_alpha(𝐇, μ), order=2048)
+function density_matrix(𝐇::AbstractMatrix, μ, α=estimate_alpha(𝐇, μ), niterations=20)
     𝐗₀ = normalize(𝐇, μ, α)
-    iterations = expand(𝐗₀, order)
+    iterations = expand(𝐗₀, niterations)
     𝐗ₙ = last(iterations)
     return I - 𝐗ₙ
 end
+
+expansion_order(niterations) = 2^niterations
