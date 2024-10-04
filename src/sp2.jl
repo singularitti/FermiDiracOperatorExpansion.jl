@@ -18,7 +18,7 @@ Base.@kwdef struct CG <: Solver
 end
 struct NewtonSchulz <: Solver end
 
-function expand(𝐗₀::AbstractMatrix; order=2048)
+function expand(𝐗₀::AbstractMatrix, order=2048)
     𝐗₀ = collect(𝐗₀)
     checksquare(𝐗₀)  # See https://discourse.julialang.org/t/120556/2
     𝐗ᵢ = 𝐗₀  # i=0
@@ -44,9 +44,9 @@ end
 
 normalize(𝐇::AbstractMatrix, μ, α=estimate_alpha(𝐇, μ)) = α * (𝐇 - μ * I) + I / 2
 
-function density_matrix(𝐇::AbstractMatrix, μ, α=estimate_alpha(𝐇, μ); order=2048)
+function density_matrix(𝐇::AbstractMatrix, μ, α=estimate_alpha(𝐇, μ), order=2048)
     𝐗₀ = normalize(𝐇, μ, α)
-    iterations = expand(𝐗₀; order)
+    iterations = expand(𝐗₀, order)
     𝐗ₙ = last(iterations)
     return I - 𝐗ₙ
 end
