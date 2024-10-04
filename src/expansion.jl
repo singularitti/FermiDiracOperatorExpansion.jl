@@ -6,7 +6,7 @@ using OffsetArrays: OffsetVector, Origin
 
 function expand(𝐗₀::AbstractMatrix, niterations::Integer=20)
     if niterations <= zero(niterations)
-        throw(ArgumentError("`niterations` must be a positive integer!"))
+        throw(DomainError("`niterations` must be a positive integer!"))
     end
     𝐗₀ = collect(𝐗₀)
     checksquare(𝐗₀)  # See https://discourse.julialang.org/t/120556/2
@@ -42,7 +42,7 @@ end
 
 function expansion_order(niterations::Integer)
     if niterations <= zero(niterations)
-        throw(ArgumentError("`niterations` must be a positive integer!"))
+        throw(DomainError("`niterations` must be a positive integer!"))
     end
     return 2^niterations
 end
