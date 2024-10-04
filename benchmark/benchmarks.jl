@@ -56,8 +56,9 @@ function compute_mu(𝐇, nocc)
     return find_zero((g, g′), μ₀, Newton(); atol=1e-8, maxiters=50, verbose=true)
 end
 
-β = 1.1604441716111258
-μ = 0.1
+β = 40
+μ = 0.6
+order = 2^20
 𝐇 = setup_hamiltonian(1000)
 
 α = estimate_alpha(𝐇, μ)
