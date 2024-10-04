@@ -4,11 +4,6 @@ using GershgorinDiscs: eigvals_extrema
 using LinearAlgebra: I, Diagonal, checksquare, eigen, eigvals
 using OffsetArrays: OffsetVector, Origin
 
-# See https://github.com/JuliaMath/Roots.jl/blob/bf0da62/src/utils.jl#L9-L11
-struct ConvergenceFailed
-    msg::String
-end
-
 function expand(𝐗₀::AbstractMatrix, order=2048)
     𝐗₀ = collect(𝐗₀)
     checksquare(𝐗₀)  # See https://discourse.julialang.org/t/120556/2
