@@ -1,4 +1,4 @@
-export density_matrix, estimate_alpha, compute_alpha, normalize, expand, fermi_dirac
+export density_matrix, estimate_alpha, compute_alpha, normalize, expand
 
 using GershgorinDiscs: eigvals_extrema
 using LinearAlgebra: I, Diagonal, checksquare, eigen, eigvals
@@ -35,15 +35,4 @@ function density_matrix(𝐇::AbstractMatrix, μ, α=estimate_alpha(𝐇, μ), o
     iterations = expand(𝐗₀, order)
     𝐗ₙ = last(iterations)
     return I - 𝐗ₙ
-end
-
-function fermi_dirac(ε, μ, β)
-    η = exp((ε - μ) * β)
-    return inv(oneunit(η) + η)
-end
-function fermi_dirac(𝐇::AbstractMatrix, μ, β)
-    E = eigen(𝐇)
-    Λ, V = E.values, E.vectors
-    FD = fermi_dirac.(Λ, μ, β)
-    return V * Diagonal(FD) * V'
 end
