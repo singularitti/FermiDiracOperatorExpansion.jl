@@ -1,4 +1,3 @@
-export CG, NewtonSchulz
 export density_matrix, estimate_alpha, compute_alpha, normalize, expand, fermi_dirac
 
 using GershgorinDiscs: eigvals_extrema
@@ -9,14 +8,6 @@ using OffsetArrays: OffsetVector, Origin
 struct ConvergenceFailed
     msg::String
 end
-
-abstract type Solver end
-Base.@kwdef struct CG <: Solver
-    abstol::Float64 = 0
-    maxiter::UInt64 = 2000
-    verbose::Bool = false
-end
-struct NewtonSchulz <: Solver end
 
 function expand(𝐗₀::AbstractMatrix, order=2048)
     𝐗₀ = collect(𝐗₀)
