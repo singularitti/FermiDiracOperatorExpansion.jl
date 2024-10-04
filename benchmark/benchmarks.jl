@@ -2,7 +2,6 @@ using FermiDiracOperatorExpansion
 using BenchmarkTools
 using GershgorinDiscs
 using LinearAlgebra: Symmetric, diagm, diag, tr, eigvals
-using Roots: Newton, find_zero
 
 SUITE = BenchmarkGroup()
 SUITE["rand"] = @benchmarkable rand(10)
@@ -30,25 +29,19 @@ function setup_hamiltonian3(N)
     return 100 * diagm(sort(rand(N)))
 end
 
-function estimate_mu(𝐇, nocc)
-    nocc = floor(Int, nocc)
-    diagonal = sort(diag(𝐇))
-    HOMO, LUMO = diagonal[nocc], diagonal[nocc + 1]
+function estimate_mu(Nocc, 𝐇)
+    Nocc = floor(Int, Nocc)
+    diagonals = sort(diag(𝐇))
+    HOMO, LUMO = diagonals[Nocc], diagonals[Nocc + 1]
     μ₀ = (HOMO + LUMO) / 2
-    @show μ₀
-    g(μ) = nocc - sum(fermi_dirac.(diagonal, μ, β))
-    g′(μ) = sum(fermi_dirac_derivative.(diagonal, μ, β))
-    return find_zero((g, g′), μ₀, Newton(); atol=1e-8, maxiters=50, verbose=true)
+    return estimate_mu(Nocc, diagonals, β, μ₀)
 end
-function compute_mu(𝐇, nocc)
-    nocc = floor(Int, nocc)
+function compute_mu(Nocc, 𝐇)
+    Nocc = floor(Int, Nocc)
     evals = eigvals(𝐇)
-    HOMO, LUMO = evals[nocc], evals[nocc + 1]
+    HOMO, LUMO = evals[Nocc], evals[Nocc + 1]
     μ₀ = (HOMO + LUMO) / 2
-    @show μ₀
-    g(μ) = nocc - sum(fermi_dirac.(evals, μ, β))
-    g′(μ) = sum(fermi_dirac_derivative.(evals, μ, β))
-    return find_zero((g, g′), μ₀, Newton(); atol=1e-8, maxiters=50, verbose=true)
+    return estimate_mu(Nocc, evals, β, μ₀)
 end
 
 β = 40
