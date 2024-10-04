@@ -30,11 +30,6 @@ function setup_hamiltonian3(N)
     return 100 * diagm(sort(rand(N)))
 end
 
-function fermi_dirac_derivative(ε, μ, β)
-    fd = fermi_dirac(ε, μ, β)
-    return -β * fd * (oneunit(fd) - fd)
-end
-
 function estimate_mu(𝐇, nocc)
     nocc = floor(Int, nocc)
     diagonal = sort(diag(𝐇))
