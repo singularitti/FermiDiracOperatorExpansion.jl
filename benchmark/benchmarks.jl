@@ -29,14 +29,14 @@ function setup_hamiltonian3(N)
     return 100 * diagm(sort(rand(N)))
 end
 
-function estimate_mu(Nocc, 𝐇)
+function estimated_mu(Nocc, 𝐇)
     Nocc = floor(Int, Nocc)
     diagonals = sort(diag(𝐇))
     HOMO, LUMO = diagonals[Nocc], diagonals[Nocc + 1]
     μ₀ = (HOMO + LUMO) / 2
     return estimate_mu(Nocc, diagonals, β, μ₀)
 end
-function compute_mu(Nocc, 𝐇)
+function exact_mu(Nocc, 𝐇)
     Nocc = floor(Int, Nocc)
     evals = eigvals(𝐇)
     HOMO, LUMO = evals[Nocc], evals[Nocc + 1]
@@ -46,17 +46,12 @@ end
 
 β = 40
 μ = 0.6
-order = 2^20
+order = 2^12
 𝐇 = setup_hamiltonian(1000)
-
 α = estimate_alpha(𝐇, μ)
-α_exact = compute_alpha(𝐇, μ)
 
-dm = density_matrix(𝐇, μ, α; order)
+dm = density_matrix(𝐇, μ, α, order)
 N = tr(dm)
-
-# dm_α_exact = density_matrix(𝐇, μ, α_exact; order=order_α_exact)
-# N_α_exact = tr(dm_α_exact)
 
 dm_exact = fermi_dirac(𝐇, μ, β)
 N_exact = tr(dm_exact)
