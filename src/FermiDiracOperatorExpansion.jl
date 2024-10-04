@@ -1,6 +1,6 @@
 module FermiDiracOperatorExpansion
 
-include("sp2.jl")
+include("expansion.jl")
 include("acceleration.jl")
 
 end
