@@ -1,7 +1,6 @@
 export CG, NewtonSchulz
 export density_matrix, estimate_alpha, compute_alpha, normalize, expand, fermi_dirac
 
-using IterativeSolvers: cg!
 using GershgorinDiscs: eigvals_extrema
 using LinearAlgebra: I, Diagonal, checksquare, eigen, eigvals
 using OffsetArrays: OffsetVector, Origin
@@ -27,20 +26,7 @@ function expand(𝐗₀::AbstractMatrix, solver::CG=CG(); order=2048)
     foreach(1:ceil(log2(order))) do _  # Start from i+1
         𝐗ᵢ² = 𝐗ᵢ^2
         𝐀 = 2𝐗ᵢ² - 2𝐗ᵢ + I
-        𝐗ᵢ = splat(hcat)(
-            map(zip(eachcol(𝐗ᵢ), eachcol(𝐗ᵢ²))) do (𝐱, 𝐛)
-                𝐱′ = copy(𝐱)
-                cg!(
-                    𝐱′,
-                    𝐀,
-                    𝐛;
-                    abstol=solver.abstol,
-                    maxiter=Int(solver.maxiter),
-                    verbose=solver.verbose,
-                )
-                𝐱′  # Each column of 𝐗ᵢ₊₁
-            end,
-        )  # It is actually 𝐗ᵢ₊₁
+        𝐗ᵢ = 𝐀 \ 𝐗ᵢ² # It is actually 𝐗ᵢ₊₁ = 
         push!(iterations, 𝐗ᵢ)
     end
     return iterations
