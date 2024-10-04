@@ -4,7 +4,10 @@ using GershgorinDiscs: eigvals_extrema
 using LinearAlgebra: I, Diagonal, checksquare, eigen, eigvals
 using OffsetArrays: OffsetVector, Origin
 
-function expand(𝐗₀::AbstractMatrix, niterations=20)
+function expand(𝐗₀::AbstractMatrix, niterations::Integer=20)
+    if niterations <= zero(niterations)
+        throw(ArgumentError("`niterations` must be a positive integer!"))
+    end
     𝐗₀ = collect(𝐗₀)
     checksquare(𝐗₀)  # See https://discourse.julialang.org/t/120556/2
     𝐗ᵢ = 𝐗₀  # i=0
@@ -37,4 +40,9 @@ function density_matrix(𝐇::AbstractMatrix, μ, α=estimate_alpha(𝐇, μ), n
     return I - 𝐗ₙ
 end
 
-expansion_order(niterations) = 2^niterations
+function expansion_order(niterations::Integer)
+    if niterations <= zero(niterations)
+        throw(ArgumentError("`niterations` must be a positive integer!"))
+    end
+    return 2^niterations
+end
