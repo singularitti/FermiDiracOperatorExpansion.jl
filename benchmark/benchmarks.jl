@@ -1,7 +1,7 @@
 using FermiDiracOperatorExpansion
 using BenchmarkTools
 using GershgorinDiscs
-using LinearAlgebra: Symmetric, diagm, diag, tr, eigvals
+using LinearAlgebra: I, Symmetric, diagm, diag, tr, eigvals
 
 SUITE = BenchmarkGroup()
 SUITE["rand"] = @benchmarkable rand(10)
@@ -44,14 +44,17 @@ function exact_mu(Nocc, 𝐇)
     return estimate_mu(Nocc, evals, β, μ₀)
 end
 
-β = 40
-μ = 0.6
-order = 2^12
+β = 4
+μ = 0.2
+niterations = 20
 𝐇 = setup_hamiltonian(1000)
 α = estimate_alpha(𝐇, μ)
-
-dm = density_matrix(𝐇, μ, α, order)
+𝐗₀ = normalize(𝐇, μ, α)
+dm = I - last(expand(𝐗₀, niterations))
 N = tr(dm)
 
 dm_exact = fermi_dirac(𝐇, μ, β)
 N_exact = tr(dm_exact)
+
+@show exact_mu(N, 𝐇)
+@show rescale_mu(estimated_mu(N, 𝐗₀), α, μ)
